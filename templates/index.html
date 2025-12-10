@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Plant Disease Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="loader" class="loader hidden">
+  <div class="spinner"></div>
+  <p>Processing... Please wait</p>
+</div>
+
+  <div class="bg-gradient"></div>
+  <div class="app-container">
+    <div class="card">
+      <h1>🌿 Plant Disease Detector</h1>
+      <p class="subtitle">
+        Upload a clear, close-up photo of a single leaf to identify its disease.
+      </p>
+
+      <form method="POST" enctype="multipart/form-data" class="upload-form"onsubmit="showLoader()">
+        <label for="image" class="upload-label">
+          <span>📷 Click to choose a leaf image</span>
+          <input id="image" name="image" type="file" accept="image/*" required>
+        </label>
+        <button type="submit" class="btn">Predict Disease</button>
+      </form>
+
+      {% if uploaded_image %}
+      <div class="result-section">
+        <h2>Result</h2>
+        <div class="result-grid">
+          <div class="image-preview">
+            <img src="{{ uploaded_image }}" alt="Uploaded leaf">
+          </div>
+          <div class="prediction-info">
+            <p class="pred-label">Predicted Disease:</p>
+            <p class="pred-class">{{ prediction }}</p>
+            <p class="pred-conf">Confidence: {{ confidence }}</p>
+
+            {% if top3 %}
+            <div class="top3">
+              <p class="top3-title">Top 3 Predictions</p>
+              <ul>
+                {% for item in top3 %}
+                <li>
+                  <span class="top3-class">{{ item.class }}</span>
+                  <span class="top3-conf">{{ '%.2f' % item.confidence }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+
+            <div class="hint">
+              <strong>Tip:</strong> For best results, use a close-up image of a single leaf in good lighting.
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <footer>
+      <p>Built with 🧠 PyTorch & Flask • MobileNetV2</p>
+    </footer>
+  </div>
+  <script>
+function showLoader() {
+  document.getElementById("loader").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
